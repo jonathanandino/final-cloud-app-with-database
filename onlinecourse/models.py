@@ -94,6 +94,10 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
+    def __str__(self):
+        return f"Enrollment for user {self.user} for course {self.course}"
+
+
 
 class Question(models.Model):
     # One-To-Many relationship to Course
@@ -105,14 +109,18 @@ class Question(models.Model):
     # question grade/mark
     marks = models.FloatField(default=1.0)
 
-    # A model method to calculate if learner scored points by answering correctly
-    def is_get_score(self, selected_ids):
+     # A model method to calculate if learner scored points by answering correctly
+    def answered_correctly(self, selected_ids):
         all_answers = self.choice_set.filter(is_correct=True).count()
         selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
         if all_answers == selected_correct:
             return True
         else:
             return False
+
+    def __str__(self):
+        return self.question_text
+
 
 #  <HINT> Create a Choice Model with:
     # Used to persist choice content for a question
